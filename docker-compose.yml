@@ -1,0 +1,21 @@
+version: "3.4"
+services:
+  RENTAL_ELASTICSEARCH:
+    image: elasticsearch:7.9.0
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  RENTAL_KIBANA:
+    image: kibana:7.9.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://RENTAL_ELASTICSEARCH:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - RENTAL_ELASTICSEARCH
