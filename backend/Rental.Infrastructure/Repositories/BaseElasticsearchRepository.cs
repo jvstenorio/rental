@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Rental.Infrastructure.Repositories
 {
-    public class BaseElasticsearchRepository<T>
+    public class BaseElasticsearchRepository<T> where T : new ()
     {
         private readonly ILogger<BaseElasticsearchRepository<T>> _logger;
         private readonly ElasticLowLevelClient _elasticLowLevelClient;
@@ -34,7 +34,7 @@ namespace Rental.Infrastructure.Repositories
         }
         public async Task<T> GetByIdentifierAsync(Guid identifier, CancellationToken cancellationToken)
         {
-            var query = $"{{\"query\":{{\"term\":{{\"transactionId.keyword\":\"{identifier}\"}}}}}}}}";
+            var query = $"{{\"query\":{{\"term\":{{\"identifier.keyword\":\"{identifier}\"}}}}}}}}";
 
             var searchResponse = await _client.SearchAsync<object>(search => search
                                         .Index(_index)

@@ -2,7 +2,7 @@
 
 namespace Rental.Domain.Repositories
 {
-    public interface IEmployeesRepository : IBaseRepository<Employee>
+    public interface IUsersRepository : IBaseRepository<User>
     {
     }
 }

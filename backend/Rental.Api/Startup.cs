@@ -1,13 +1,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Rental.Api.Middlewares;
+using Rental.Domain.Errors;
+using Rental.Domain.Mappers;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Rental.Api
 {
@@ -23,6 +28,10 @@ namespace Rental.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(new Type[]
+            {
+                typeof(MapperProfile)
+            });
 
             services.AddElasticsearch(Configuration);
             services.AddApplications();
@@ -48,7 +57,19 @@ namespace Rental.Api
                 c.IncludeXmlComments(apiPath);
             });
 
+            services.Configure<ApiBehaviorOptions>(o =>
+            {
+                o.InvalidModelStateResponseFactory = actionContext =>
+                new BadRequestObjectResult(GetErrorFromModelState(actionContext.ModelState));
+            });
+
             services.AddControllers();
+
+            services.Configure<ApiBehaviorOptions>(o =>
+            {
+                o.InvalidModelStateResponseFactory = actionContext =>
+                new BadRequestObjectResult(GetErrorFromModelState(actionContext.ModelState));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,6 +89,8 @@ namespace Rental.Api
                 
             });
 
+            app.UseMiddleware<ErrorHandlerMiddleware>();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -78,6 +101,28 @@ namespace Rental.Api
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private ErrorModel GetErrorFromModelState(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState)
+        {
+
+            string errors = string.Empty;
+            foreach (var state in modelState)
+            {
+                foreach (var error in state.Value.Errors)
+                {
+                    var errorMessage = state.Value.Errors
+                        .Select(e => e.ErrorMessage)
+                        .Aggregate((acc, e) => $"{acc}\n{e}");
+                    errors = errors + errorMessage;
+                }
+            }
+
+            return new ErrorModel
+            {
+                Message = errors
+            };
+
         }
     }
 }

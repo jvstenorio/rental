@@ -4,5 +4,22 @@
         <name>Rental.Api</name>
     </assembly>
     <members>
+        <member name="M:Rental.Api.Controllers.UsersController.LoginAsync(System.String,System.String)">
+            <summary>
+            Authenticates an user.
+            </summary>
+            <param name="login">CPF or registration number</param>
+            <param name="password">User's password</param>
+            <returns></returns>
+        </member>
+        <member name="M:Rental.Api.Controllers.UsersController.PostUserAsync(System.String,System.String,Rental.Domain.Enumerations.Profile)">
+            <summary>
+            Authenticates an user.
+            </summary>
+            <param name="login">CPF or registration number</param>
+            <param name="password">User's password</param>
+            <param name="profile">Profile type (CUSTOMER = 1 OR EMPLOYEE = 0)</param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

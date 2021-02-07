@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
 using Nest.JsonNetSerializer;
+using Rental.Application;
+using Rental.Domain.Applications;
 using Rental.Domain.Repositories;
 using Rental.Infrastructure.Repositories;
 using System;
@@ -27,12 +29,16 @@ namespace Rental.Api
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
+            services.AddSingleton(typeof(BaseElasticsearchRepository<>));
             services.AddSingleton<IEmployeesRepository, EmployeesRepository>();
+            services.AddSingleton<IUsersRepository, UsersRepository>();
+            services.AddSingleton<ICustomersRepository, CustomersRespository>();
             return services;
         }
 
         public static IServiceCollection AddApplications(this IServiceCollection services)
         {
+            services.AddSingleton<IUsersApplication, UsersApplication>();
             return services;
         }
     }
