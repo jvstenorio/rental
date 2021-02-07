@@ -80,12 +80,12 @@ namespace Rental.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UsePathBase("/app");
+            app.UsePathBase("");
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = string.Empty;
-                c.SwaggerEndpoint("/app/swagger/v1/swagger.json", "API Rental");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Rental");
                 
             });
 

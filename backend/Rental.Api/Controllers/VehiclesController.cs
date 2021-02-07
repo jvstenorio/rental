@@ -78,6 +78,21 @@ namespace Rental.Api.Controllers
             var model = await _vehiclesApplication.CreateModelAsync(modelDto, cts.Token);
             return Created(string.Empty, model);
         }
+        /// <summary>
+        /// List vehicles
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(ModelDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetVehicles()
+        {
+            using var cts = new CancellationTokenSource(_timeout);
+            var vehicles = await _vehiclesApplication.ListVehiclesAsync(cts.Token);
+            return Ok(vehicles);
+        }
 
     }
 }

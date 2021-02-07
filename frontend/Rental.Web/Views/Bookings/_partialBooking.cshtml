@@ -1,0 +1,23 @@
+﻿@model BookingDto
+
+<div class="form-group">
+    <label asp-for="Plate" class="control-label"></label>
+    <input asp-for="Plate" class="form-control" readonly="@(true)" />
+    <span asp-validation-for="Plate" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="TotalHours" class="control-label"></label>
+    <input asp-for="TotalHours" class="form-control updateevent" />
+    <span asp-validation-for="TotalHours" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Price" class="control-label"></label>
+    @*<input asp-for="Price" class="form-control" readonly="@(true)" />*@
+    <input readonly asp-for="Price" value="@Model.Price" class="form-control"/>
+    <span asp-validation-for="Price" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Cpf" class="control-label"></label>
+    <input asp-for="Cpf" class="form-control" />
+    <span asp-validation-for="Cpf" class="text-danger"></span>
+</div>

@@ -1,4 +1,5 @@
 ﻿using Rental.Domain.Models;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,5 +11,6 @@ namespace Rental.Domain.Applications
         Task<MakeDto> CreateMakeAsync(MakeDto makeDto, CancellationToken cancellationToken);
         Task<ModelDto> CreateModelAsync(ModelDto modelDto, CancellationToken cancellationToken);
         Task<VehicleDto> GetVehicleAsync(string plate, CancellationToken cancellationToken);
+        Task<List<VehicleDto>> ListVehiclesAsync(CancellationToken cancellationToken);
     }
 }

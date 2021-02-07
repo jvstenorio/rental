@@ -3,7 +3,9 @@ using Rental.Domain.Applications;
 using Rental.Domain.Entities;
 using Rental.Domain.Models;
 using Rental.Domain.Repositories;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,6 +68,13 @@ namespace Rental.Application
                 return default;
             }
             return _mapper.Map<VehicleDto>(vehicle);
+        }
+
+        public async Task<List<VehicleDto>> ListVehiclesAsync(CancellationToken cancellationToken)
+        {
+            var vehicles = await _vehiclesRepository.ListAllAsync(cancellationToken);
+            var dto = vehicles.Select(v => _mapper.Map<VehicleDto>(v));
+            return dto.ToList();
         }
 
         private async Task ValidateVehicleAsync(VehicleDto vehicleDto, CancellationToken cancellationToken)

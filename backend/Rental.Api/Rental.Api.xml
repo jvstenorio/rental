@@ -27,6 +27,13 @@
             <param name="vehicleChecklistDto"></param>
             <returns></returns>
         </member>
+        <member name="M:Rental.Api.Controllers.BookingsController.GetContractAsync(System.String)">
+            <summary>
+            Get booking contract file
+            </summary>
+            <param name="bookingCode"></param>
+            <returns></returns>
+        </member>
         <member name="M:Rental.Api.Controllers.UsersController.LoginAsync(System.String,System.String)">
             <summary>
             Authenticates an user.
@@ -77,6 +84,12 @@
             Create a model
             </summary>
             <param name="modelDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Rental.Api.Controllers.VehiclesController.GetVehicles">
+            <summary>
+            List vehicles
+            </summary>
             <returns></returns>
         </member>
     </members>
