@@ -22,7 +22,7 @@ namespace Rental.Api.Controllers
         public UsersController(IConfiguration configuration, IUsersApplication usersApplication)
         {
             _usersApplication = usersApplication;
-            _timeout = TimeSpan.FromSeconds(configuration.GetTimeoutInSeconds());
+            _timeout = TimeSpan.FromSeconds(configuration.GetTimeoutInSec());
         }
         /// <summary>
         /// Authenticates an user.

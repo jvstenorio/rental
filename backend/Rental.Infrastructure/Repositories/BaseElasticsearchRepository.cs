@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Nest;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Rental.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +13,22 @@ using System.Threading.Tasks;
 
 namespace Rental.Infrastructure.Repositories
 {
-    public class BaseElasticsearchRepository<T> where T : new ()
+    public class BaseElasticsearchRepository<T> where T : new()
     {
         private readonly ILogger<BaseElasticsearchRepository<T>> _logger;
+        private readonly IMemoryCacheRepository _memoryCacheRepository;
         private readonly ElasticLowLevelClient _elasticLowLevelClient;
         private readonly ElasticClient _client;
         private readonly string _index;
         private static readonly SnakeCaseNamingStrategy _snakeCase = new SnakeCaseNamingStrategy();
 
-        public BaseElasticsearchRepository(IServiceProvider provider, ILogger<BaseElasticsearchRepository<T>> logger)
+        public BaseElasticsearchRepository(
+            IServiceProvider provider,
+            ILogger<BaseElasticsearchRepository<T>> logger,
+            IMemoryCacheRepository memoryCacheRepository)
         {
             _logger = logger;
+            _memoryCacheRepository = memoryCacheRepository;
             _elasticLowLevelClient = provider.GetService<ElasticLowLevelClient>();
             _client = provider.GetService<ElasticClient>();
             _index = _snakeCase.GetPropertyName(typeof(T).Name, false);
@@ -30,9 +36,21 @@ namespace Rental.Infrastructure.Repositories
 
         public async Task AddAsync(object entity, CancellationToken cancellationToken)
         {
-            var response = await _client.IndexAsync(entity, i => i.Index(_index));
+            var response = await _client.IndexAsync(entity, i => i.Index(_index), cancellationToken);
         }
-        public async Task<T> GetByIdentifierAsync(Guid identifier, CancellationToken cancellationToken)
+        public async Task<T> GetByIdentifierAsync(Guid identifier, CancellationToken cancellationToken) =>
+            await _memoryCacheRepository.GetOrCreateAsync(
+                identifier.ToString(),
+                () => GetByIdentifierQueryAsync(identifier, cancellationToken)
+                );
+
+        public async Task<List<T>> ListAllAsync(CancellationToken cancellationToken) =>
+            await _memoryCacheRepository.GetOrCreateAsync(
+                typeof(List<T>).Name,
+                () => ListAllQueryAsync(cancellationToken)
+                );
+
+        public async Task<T> GetByIdentifierQueryAsync(Guid identifier, CancellationToken cancellationToken)
         {
             var query = $"{{\"query\":{{\"term\":{{\"identifier.keyword\":\"{identifier}\"}}}}}}}}";
 
@@ -46,8 +64,7 @@ namespace Rental.Infrastructure.Repositories
             return document != null ? DeserializeEntityFromDocument(document) : default;
 
         }
-
-        public async Task<List<T>> ListAllAsync(CancellationToken cancellationToken)
+        private async Task<List<T>> ListAllQueryAsync(CancellationToken cancellationToken)
         {
 
             var searchResponse = await _client.SearchAsync<object>(search => search
@@ -56,7 +73,7 @@ namespace Rental.Infrastructure.Repositories
                                         .Query(q => q.MatchAll())
                                         , cancellationToken);
 
-            var entities = searchResponse.Documents?.Select( d => DeserializeEntityFromDocument(d))?.ToList();
+            var entities = searchResponse.Documents?.Select(d => DeserializeEntityFromDocument(d))?.ToList();
 
             return entities != null ? entities : new List<T>();
         }

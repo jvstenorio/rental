@@ -5,6 +5,7 @@ using Nest;
 using Nest.JsonNetSerializer;
 using Rental.Application;
 using Rental.Domain.Applications;
+using Rental.Domain.Extensions;
 using Rental.Domain.Repositories;
 using Rental.Infrastructure.Repositories;
 using System;
@@ -27,7 +28,7 @@ namespace Rental.Api
             return services;
         }
 
-        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        public static IServiceCollection AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(typeof(BaseElasticsearchRepository<>));
             services.AddSingleton<IEmployeesRepository, EmployeesRepository>();
@@ -36,6 +37,13 @@ namespace Rental.Api
             services.AddSingleton<IVehiclesRepository, VehiclesRepository>();
             services.AddSingleton<IMakesRepository, MakesRepository>();
             services.AddSingleton<IModelsRepository, ModelsRepository>();
+            services.AddSingleton<IMemoryCacheRepository>(
+                new MemoryCacheRepository(
+                    configuration.GetSizeLimit(), 
+                    configuration.GetAsoluteExpirationInSec(), 
+                    configuration.GetSlidingExpirationInSec()
+                    )
+                );
             return services;
         }
 

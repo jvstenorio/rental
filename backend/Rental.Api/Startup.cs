@@ -35,7 +35,7 @@ namespace Rental.Api
 
             services.AddElasticsearch(Configuration);
             services.AddApplications();
-            services.AddRepositories();
+            services.AddRepositories(Configuration);
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
             {

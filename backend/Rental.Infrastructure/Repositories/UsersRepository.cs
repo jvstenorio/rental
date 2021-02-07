@@ -7,7 +7,10 @@ namespace Rental.Infrastructure.Repositories
 {
     public class UsersRepository : BaseElasticsearchRepository<User>, IUsersRepository
     {
-        public UsersRepository(IServiceProvider provider, ILogger<BaseElasticsearchRepository<User>> logger) : base(provider, logger)
+        public UsersRepository(
+            IServiceProvider provider,
+            ILogger<BaseElasticsearchRepository<User>> logger,
+            IMemoryCacheRepository memoryCacheRepository) : base(provider, logger, memoryCacheRepository)
         {
         }
     }

@@ -26,7 +26,7 @@ namespace Rental.Api.Controllers
         {
             _vehiclesApplication = vehiclesApplication;
             _configuration = configuration;
-            _timeout = TimeSpan.FromSeconds(configuration.GetTimeoutInSeconds());
+            _timeout = TimeSpan.FromSeconds(configuration.GetTimeoutInSec());
         }
         /// <summary>
         /// Create a vehicle

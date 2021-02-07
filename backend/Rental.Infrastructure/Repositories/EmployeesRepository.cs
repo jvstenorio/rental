@@ -8,8 +8,9 @@ namespace Rental.Infrastructure.Repositories
     public class EmployeesRepository : BaseElasticsearchRepository<Employee>, IEmployeesRepository
     {
         public EmployeesRepository(
-            IServiceProvider provider,
-            ILogger<BaseElasticsearchRepository<Employee>> logger) : base(provider, logger)
+            IServiceProvider provider, 
+            ILogger<BaseElasticsearchRepository<Employee>> logger, 
+            IMemoryCacheRepository memoryCacheRepository) : base(provider, logger, memoryCacheRepository)
         {
         }
     }

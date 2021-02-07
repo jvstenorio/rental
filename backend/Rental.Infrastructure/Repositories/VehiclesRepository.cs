@@ -7,7 +7,10 @@ namespace Rental.Infrastructure.Repositories
 {
     public class VehiclesRepository : BaseElasticsearchRepository<Vehicle>, IVehiclesRepository
     {
-        public VehiclesRepository(IServiceProvider provider, ILogger<BaseElasticsearchRepository<Vehicle>> logger) : base(provider, logger)
+        public VehiclesRepository(
+            IServiceProvider provider,
+            ILogger<BaseElasticsearchRepository<Vehicle>> logger,
+            IMemoryCacheRepository memoryCacheRepository) : base(provider, logger, memoryCacheRepository)
         {
         }
     }
