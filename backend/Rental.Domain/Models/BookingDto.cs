@@ -1,4 +1,6 @@
-﻿namespace Rental.Domain.Models
+﻿using System;
+
+namespace Rental.Domain.Models
 {
     public class BookingDto
     {
@@ -7,5 +9,6 @@
         public double? Price { get; set; }
         public string Cpf { get; set; }
         public string Plate { get; set; }
+        public DateTimeOffset Date { get; set; }
     }
 }

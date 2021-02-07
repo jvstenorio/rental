@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Rental.Domain.Applications;
 using Rental.Domain.Entities;
 using Rental.Domain.Enumerations;
@@ -6,6 +8,7 @@ using Rental.Domain.Models;
 using Rental.Domain.Repositories;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,6 +73,7 @@ namespace Rental.Application
 
             bookingDto.BookingCode = GenerateRandomCode(8);
             bookingDto.Price = GetBookingPrice(vehicleTask.Result, bookingDto.TotalHours.Value);
+            bookingDto.Date = DateTimeOffset.Now;
             var booking = _mapper.Map<Booking>(bookingDto);
             booking.Identifier = Booking.GetIdentifier(bookingDto.BookingCode);
             booking.Status = BookingStatus.OPEN.ToString();
@@ -87,6 +91,96 @@ namespace Rental.Application
             var bookingDto =  _mapper.Map<BookingDto>(booking);
             bookingDto.Price = GetPriceAfterChecklist(checklist, booking.Price);
             return bookingDto;
+        }
+
+        public async Task<byte[]> GetContractFromBookingAsync(string bookingCode, CancellationToken cancellationToken)
+        {
+            var booking = await _bookingsRepository.GetByIdentifierAsync(Booking.GetIdentifier(bookingCode), cancellationToken);
+            if (booking == null) 
+            {
+                throw new ValidationException("Booking not found");
+            }
+            var customerTask = _usersApplication.GetCustomerAsync(booking.Cpf, cancellationToken);
+            var vehicleTask = _vehiclesApplication.GetVehicleAsync(booking.Plate, cancellationToken);
+            await Task.WhenAll(customerTask, vehicleTask);
+            var customer = customerTask.Result;
+            var vehicle = vehicleTask.Result;
+
+            using var ms = new MemoryStream();
+            Document doc = new Document();
+            Thread.Sleep(1000);
+
+            PdfWriter writer = PdfWriter.GetInstance(doc, ms);
+            doc.Open();
+            var header = new Paragraph("Contrato");
+            header.Alignment = Element.ALIGN_CENTER;
+            doc.Add(header);
+            doc.Add(new Paragraph("\n\n"));
+            doc.Add(GetVehicleTable(vehicle));
+            doc.Add(new Paragraph("\n"));
+            doc.Add(GetCustomerTable(customer));
+            doc.Add(new Paragraph("\n"));
+
+            doc.Add(BookingTable(booking));
+            doc.Add(new Paragraph("\n\n"));
+
+            var footer = new Paragraph("Assinatura");
+            footer.Alignment = Element.ALIGN_CENTER;
+            doc.Add(footer);
+
+            doc.Close();
+            return ms.ToArray();
+        }
+        private PdfPTable GetVehicleTable(VehicleDto vehicle) 
+        {
+
+            PdfPTable table = new PdfPTable(3);
+
+            var cell = new PdfPCell(new Phrase($"Veículo: {vehicle.Make} {vehicle.Model} {vehicle.Year}"));
+            cell.Colspan = 2;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell);
+
+            table.AddCell($"Placa: {vehicle.Plate}");
+            table.AddCell($"Categoria: {vehicle.Category}");
+            table.AddCell($"Preço Hora: {vehicle.PricePerHour.Value}");
+            table.AddCell($"Combustível: {vehicle.Fuel}");
+
+            return table;
+        }
+
+        private PdfPTable GetCustomerTable(CustomerDto customer)
+        {
+
+            PdfPTable table = new PdfPTable(3);
+
+            var cell = new PdfPCell(new Phrase($"Cliente: {customer.Name}"));
+            cell.Colspan = 2;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell);
+
+            table.AddCell($"CPF: {customer.Cpf}");
+            table.AddCell($"Nasc.: {customer.BirthDate.Value.ToString("dd/MM/yyyy")}");
+            table.AddCell($"Cidade: {customer.Address.City}");
+            table.AddCell($"Estado: {customer.Address.State}");
+
+            return table;
+        }
+
+        private PdfPTable BookingTable(Booking booking)
+        {
+
+            PdfPTable table = new PdfPTable(3);
+
+            var cell = new PdfPCell(new Phrase($"Reserva: {booking.BookingCode}"));
+            cell.Colspan = 1;
+            cell.HorizontalAlignment = Element.ALIGN_LEFT;
+            table.AddCell(cell);
+
+            table.AddCell($"Preço: {booking.Price} R$");
+            table.AddCell($"Data: {booking.Date.ToString("dd/MM/yyyy")}");
+
+            return table;
         }
 
         private double GetPriceAfterChecklist(VehicleChecklistDto checklist, double price) 

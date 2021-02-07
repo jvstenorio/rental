@@ -11,5 +11,7 @@ namespace Rental.Domain.Applications
         Task<BookingDto> CreateBookingAsync(BookingDto bookingDto, CancellationToken cancellationToken);
 
         Task<BookingDto> GetBookingAfterChecklistAsync(VehicleChecklistDto checklist, string bookingCode, CancellationToken cancellationToken);
+
+        Task<byte[]> GetContractFromBookingAsync(string bookingCode, CancellationToken cancellationToken);
     }
 }

@@ -12,6 +12,7 @@ namespace Rental.Domain.Entities
         public int TotalHours { get; set; }
         public double Price { get; set; }
         public string Status { get; set; }
+        public DateTimeOffset Date { get; set; }
 
         public static Guid GetIdentifier(string bookingCode)
         {

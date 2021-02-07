@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Rental.Domain.Applications;
@@ -7,8 +10,11 @@ using Rental.Domain.Extensions;
 using Rental.Domain.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using static iTextSharp.text.TabStop;
 
 namespace Rental.Api.Controllers
 {
@@ -83,6 +89,18 @@ namespace Rental.Api.Controllers
             using var cts = new CancellationTokenSource(_timeout);
             var booking = await _bookingsApplication.GetBookingAfterChecklistAsync(vehicleChecklistDto, bookingCode, cts.Token);
             return Ok(booking);
+        }
+        /// <summary>
+        /// Get booking contract file
+        /// </summary>
+        /// <param name="bookingCode"></param>
+        /// <returns></returns>
+        [HttpGet("{bookingCode}/contract")]
+        public async Task<FileResult> GetContractAsync([FromRoute] string bookingCode)
+        {
+            using var cts = new CancellationTokenSource(_timeout);
+            var byteArray = await _bookingsApplication.GetContractFromBookingAsync(bookingCode, cts.Token);
+            return File(byteArray, MediaTypeNames.Application.Pdf, $"{bookingCode}.pdf");
         }
     }
 }
