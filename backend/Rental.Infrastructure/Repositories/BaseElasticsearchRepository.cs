@@ -56,7 +56,7 @@ namespace Rental.Infrastructure.Repositories
 
             var searchResponse = await _client.SearchAsync<object>(search => search
                                         .Index(_index)
-                                        .Query(qry => qry.SimpleQueryString(s => s.Query(query)))
+                                        .Query(q => q.SimpleQueryString(s => s.Query(query)))
                                         , cancellationToken);
 
             var document = searchResponse.Documents.FirstOrDefault();

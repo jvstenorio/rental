@@ -4,6 +4,14 @@
         <name>Rental.Api</name>
     </assembly>
     <members>
+        <member name="M:Rental.Api.Controllers.BookingsController.GetQuotationAsync(System.String,System.Int32)">
+            <summary>
+            Get a quotation
+            </summary>
+            <param name="plate"></param>
+            <param name="totalHours"></param>
+            <returns></returns>
+        </member>
         <member name="M:Rental.Api.Controllers.UsersController.LoginAsync(System.String,System.String)">
             <summary>
             Authenticates an user.

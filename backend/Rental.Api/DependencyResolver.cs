@@ -51,6 +51,7 @@ namespace Rental.Api
         {
             services.AddSingleton<IUsersApplication, UsersApplication>();
             services.AddSingleton<IVehiclesApplication, VehiclesApplication>();
+            services.AddSingleton<IBookingsApplication, BookingsApplication>();
             return services;
         }
     }

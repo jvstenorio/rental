@@ -57,6 +57,17 @@ namespace Rental.Application
             return vehicleDto;
         }
 
+        public async Task<VehicleDto> GetVehicleAsync(string plate, CancellationToken cancellationToken)
+        {
+            var identifier = Vehicle.GetIdentifier(plate);
+            var vehicle = await _vehiclesRepository.GetByIdentifierAsync(identifier, cancellationToken);
+            if (vehicle == null) 
+            {
+                return default;
+            }
+            return _mapper.Map<VehicleDto>(vehicle);
+        }
+
         private async Task ValidateVehicleAsync(VehicleDto vehicleDto, CancellationToken cancellationToken)
         {
 
