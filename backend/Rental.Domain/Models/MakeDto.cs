@@ -2,10 +2,8 @@
 
 namespace Rental.Domain.Models
 {
-    public class EmployeeDto : UserDto
+    public class MakeDto
     {
-        [Required]
-        public string RegistrationNumber { get; set; }
         [Required]
         public string Name { get; set; }
     }

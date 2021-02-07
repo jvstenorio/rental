@@ -9,16 +9,27 @@ namespace Rental.Domain.Mappers
         public MapperProfile() 
         {
             UsersMappings();
+            VehiclesMappings();
         }
 
         public void UsersMappings() 
         {
             CreateMap<Customer, CustomerDto>();
             CreateMap<Employee, EmployeeDto>();
-            CreateMap<User, UserDto>().ForMember(dest => dest.Profile, opt => opt.MapFrom(src => src.Profile.ToString()));
+            CreateMap<User, UserDto>();
             CreateMap<CustomerDto, Customer>();
             CreateMap<EmployeeDto, Employee>();
             CreateMap<UserDto, User>();
+        }
+
+        public void VehiclesMappings() 
+        {
+            CreateMap<Vehicle, VehicleDto>();
+            CreateMap<VehicleDto, Vehicle>();
+            CreateMap<Make, MakeDto>();
+            CreateMap<MakeDto, Make>();
+            CreateMap<Model, ModelDto>();
+            CreateMap<ModelDto, Model>();
         }
     }
 }

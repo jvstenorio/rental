@@ -5,6 +5,7 @@ using Rental.Domain.Models;
 using Rental.Domain.Repositories;
 using Rental.Domain.ValueObjects;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -84,7 +85,7 @@ namespace Rental.Application
             var customer = await _customersRepository.GetByIdentifierAsync(Customer.GetIdentifier(login), cancellationToken);
             if (customer == null)
             {
-                return default;
+                throw new ValidationException("Customer's not found!");
             }
             var isValidPassword = await IsValidPasswordAsync(User.GetIdentifier(login), password, cancellationToken);
             return isValidPassword ? _mapper.Map<CustomerDto>(customer) : default;
@@ -95,7 +96,7 @@ namespace Rental.Application
             var employee = await _employeesRepository.GetByIdentifierAsync(Employee.GetIdentifier(login), cancellationToken);
             if (employee == null)
             {
-                return default;
+                throw new ValidationException("Employee's not found!");
             }
             var isValidPassword = await IsValidPasswordAsync(User.GetIdentifier(login), password, cancellationToken);
             return isValidPassword ? _mapper.Map<EmployeeDto>(employee) : default;

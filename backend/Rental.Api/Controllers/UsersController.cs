@@ -73,6 +73,11 @@ namespace Rental.Api.Controllers
             return Created(string.Empty, user);
         }
 
+        /// <summary>
+        /// Create a customer
+        /// </summary>
+        /// <param name="customerDto"></param>
+        /// <returns></returns>
         [HttpPost("customers")]
         [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -84,7 +89,11 @@ namespace Rental.Api.Controllers
             var customer = await _usersApplication.CreateCustomerAsync(customerDto, cts.Token);
             return Created(string.Empty, customer);
         }
-
+        /// <summary>
+        /// Create a employee
+        /// </summary>
+        /// <param name="employeeDto"></param>
+        /// <returns></returns>
         [HttpPost("employee")]
         [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]

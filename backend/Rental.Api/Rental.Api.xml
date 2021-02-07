@@ -21,5 +21,40 @@
             <param name="profile">Profile type (CUSTOMER = 1 OR EMPLOYEE = 0)</param>
             <returns></returns>
         </member>
+        <member name="M:Rental.Api.Controllers.UsersController.PostCustomersAsync(Rental.Domain.Models.CustomerDto)">
+            <summary>
+            Create a customer
+            </summary>
+            <param name="customerDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Rental.Api.Controllers.UsersController.PostEmployeeAsync(Rental.Domain.Models.EmployeeDto)">
+            <summary>
+            Create a employee
+            </summary>
+            <param name="employeeDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Rental.Api.Controllers.VehiclesController.PostVehicleAsync(Rental.Domain.Models.VehicleDto)">
+            <summary>
+            Create a vehicle
+            </summary>
+            <param name="vehicleDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Rental.Api.Controllers.VehiclesController.PostMakeAsync(Rental.Domain.Models.MakeDto)">
+            <summary>
+            Create a make
+            </summary>
+            <param name="makeDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Rental.Api.Controllers.VehiclesController.PostModelAsync(Rental.Domain.Models.ModelDto)">
+            <summary>
+            Create a model
+            </summary>
+            <param name="modelDto"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

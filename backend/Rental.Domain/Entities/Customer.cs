@@ -8,7 +8,7 @@ namespace Rental.Domain.Entities
     {
         public string Name { get; set; }
         public string Cpf { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public Address Address { get; set; }
 
         public static Guid GetIdentifier(string cpf)

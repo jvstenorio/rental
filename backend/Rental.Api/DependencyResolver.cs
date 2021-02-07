@@ -32,13 +32,17 @@ namespace Rental.Api
             services.AddSingleton(typeof(BaseElasticsearchRepository<>));
             services.AddSingleton<IEmployeesRepository, EmployeesRepository>();
             services.AddSingleton<IUsersRepository, UsersRepository>();
-            services.AddSingleton<ICustomersRepository, CustomersRespository>();
+            services.AddSingleton<ICustomersRepository, CustomersRepository>();
+            services.AddSingleton<IVehiclesRepository, VehiclesRepository>();
+            services.AddSingleton<IMakesRepository, MakesRepository>();
+            services.AddSingleton<IModelsRepository, ModelsRepository>();
             return services;
         }
 
         public static IServiceCollection AddApplications(this IServiceCollection services)
         {
             services.AddSingleton<IUsersApplication, UsersApplication>();
+            services.AddSingleton<IVehiclesApplication, VehiclesApplication>();
             return services;
         }
     }
