@@ -19,8 +19,8 @@ namespace Rental.Infrastructure.Repositories
         private readonly IMemoryCacheRepository _memoryCacheRepository;
         private readonly ElasticLowLevelClient _elasticLowLevelClient;
         private readonly ElasticClient _client;
-        private readonly string _index;
         private static readonly SnakeCaseNamingStrategy _snakeCase = new SnakeCaseNamingStrategy();
+        public readonly string _index;
 
         public BaseElasticsearchRepository(
             IServiceProvider provider,

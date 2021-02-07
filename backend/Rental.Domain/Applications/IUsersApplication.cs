@@ -14,6 +14,6 @@ namespace Rental.Domain.Applications
 
         Task<EmployeeDto> CreateEmployeeAsync(EmployeeDto employeeDto, CancellationToken cancellationToken);
 
-
+        Task<CustomerDto> GetCustomerAsync(string cpf, CancellationToken cancellationToken);
     }
 }

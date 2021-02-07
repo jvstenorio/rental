@@ -6,13 +6,14 @@ namespace Rental.Domain.Mappers
 {
     public class MapperProfile : Profile
     {
-        public MapperProfile() 
+        public MapperProfile()
         {
             UsersMappings();
             VehiclesMappings();
+            BookingsMappings();
         }
 
-        public void UsersMappings() 
+        public void UsersMappings()
         {
             CreateMap<Customer, CustomerDto>();
             CreateMap<Employee, EmployeeDto>();
@@ -22,7 +23,7 @@ namespace Rental.Domain.Mappers
             CreateMap<UserDto, User>();
         }
 
-        public void VehiclesMappings() 
+        public void VehiclesMappings()
         {
             CreateMap<Vehicle, VehicleDto>();
             CreateMap<VehicleDto, Vehicle>();
@@ -30,6 +31,12 @@ namespace Rental.Domain.Mappers
             CreateMap<MakeDto, Make>();
             CreateMap<Model, ModelDto>();
             CreateMap<ModelDto, Model>();
+        }
+
+        public void BookingsMappings()
+        {
+            CreateMap<BookingDto, Booking>();
+            CreateMap<Booking, BookingDto>();
         }
     }
 }

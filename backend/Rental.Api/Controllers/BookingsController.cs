@@ -6,9 +6,7 @@ using Rental.Domain.Errors;
 using Rental.Domain.Extensions;
 using Rental.Domain.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,10 +42,46 @@ namespace Rental.Api.Controllers
         {
             using var cts = new CancellationTokenSource(_timeout);
             var booking = await _bookingsApplication.GetQuotationAsync(plate, totalHours, cts.Token);
-            if (booking == null) 
+            if (booking == null)
             {
                 return NotFound();
             }
+            return Ok(booking);
+        }
+        /// <summary>
+        /// Create a booking
+        /// </summary>
+        /// <param name="bookingDto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ProducesResponseType(typeof(BookingDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostBookingAsync([FromBody, Required] BookingDto bookingDto)
+        {
+            using var cts = new CancellationTokenSource(_timeout);
+            var booking = await _bookingsApplication.CreateBookingAsync(bookingDto, cts.Token);
+            return Created(string.Empty, booking);
+        }
+
+        /// <summary>
+        /// Get booking after checklist
+        /// </summary>
+        /// <param name="bookingCode"></param>
+        /// <param name="vehicleChecklistDto"></param>
+        /// <returns></returns>
+        [HttpPost("{bookingCode}/checklist")]
+        [ProducesResponseType(typeof(BookingDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetBookingAfterChecklistAsync(
+            [FromRoute, Required] string bookingCode,
+            [FromBody, Required] VehicleChecklistDto vehicleChecklistDto)
+        {
+            using var cts = new CancellationTokenSource(_timeout);
+            var booking = await _bookingsApplication.GetBookingAfterChecklistAsync(vehicleChecklistDto, bookingCode, cts.Token);
             return Ok(booking);
         }
     }

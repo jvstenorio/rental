@@ -37,6 +37,7 @@ namespace Rental.Api
             services.AddSingleton<IVehiclesRepository, VehiclesRepository>();
             services.AddSingleton<IMakesRepository, MakesRepository>();
             services.AddSingleton<IModelsRepository, ModelsRepository>();
+            services.AddSingleton<IBookingsRepository, BookingsRepository>();
             services.AddSingleton<IMemoryCacheRepository>(
                 new MemoryCacheRepository(
                     configuration.GetSizeLimit(), 

@@ -74,6 +74,17 @@ namespace Rental.Application
             return _mapper.Map<UserDto>(user);
         }
 
+        public async Task<CustomerDto> GetCustomerAsync(string cpf, CancellationToken cancellationToken)
+        {
+            var identifier = Customer.GetIdentifier(cpf);
+            var customer = await _customersRepository.GetByIdentifierAsync(identifier, cancellationToken);
+            if (customer == null)
+            {
+                return default;
+            }
+            return _mapper.Map<CustomerDto>(customer);
+        }
+
         private async Task<bool> IsValidPasswordAsync(Guid identifier, string password, CancellationToken cancellationToken)
         {
             var user = await _usersRepository.GetByIdentifierAsync(identifier, cancellationToken);

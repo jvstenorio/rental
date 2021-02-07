@@ -12,6 +12,21 @@
             <param name="totalHours"></param>
             <returns></returns>
         </member>
+        <member name="M:Rental.Api.Controllers.BookingsController.PostBookingAsync(Rental.Domain.Models.BookingDto)">
+            <summary>
+            Create a booking
+            </summary>
+            <param name="bookingDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Rental.Api.Controllers.BookingsController.GetBookingAfterChecklistAsync(System.String,Rental.Domain.Models.VehicleChecklistDto)">
+            <summary>
+            Get booking after checklist
+            </summary>
+            <param name="bookingCode"></param>
+            <param name="vehicleChecklistDto"></param>
+            <returns></returns>
+        </member>
         <member name="M:Rental.Api.Controllers.UsersController.LoginAsync(System.String,System.String)">
             <summary>
             Authenticates an user.
