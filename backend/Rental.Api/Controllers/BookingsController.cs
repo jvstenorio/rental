@@ -102,5 +102,17 @@ namespace Rental.Api.Controllers
             var byteArray = await _bookingsApplication.GetContractFromBookingAsync(bookingCode, cts.Token);
             return File(byteArray, MediaTypeNames.Application.Pdf, $"{bookingCode}.pdf");
         }
+        /// <summary>
+        /// Get bookings by CPF
+        /// </summary>
+        /// <param name="cpf"></param>
+        /// <returns></returns>
+        [HttpGet("customers/{cpf}")]
+        public async Task<IActionResult> GetBookingByCpfAsync([FromRoute] string cpf)
+        {
+            using var cts = new CancellationTokenSource(_timeout);
+            var bookings = await _bookingsApplication.GetBookingsByCpfAsync(cpf, cts.Token);
+            return Ok(bookings);
+        }
     }
 }

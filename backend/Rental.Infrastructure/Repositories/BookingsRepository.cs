@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Rental.Domain.Enumerations;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Rental.Infrastructure.Repositories
 {
@@ -34,6 +35,20 @@ namespace Rental.Infrastructure.Repositories
                 cancellationToken);
 
             return searchResponse.Documents?.Any() ?? false;
+        }
+
+        public async Task<List<Booking>> GetBookingsByCpfAsync(string cpf, CancellationToken cancellationToken)
+        {
+
+            var searchResponse = await _client.SearchAsync<object>(search => search
+                                        .Index(_index)
+                                        .Size(10000)
+                                        .Query(q => q.Match(m => m.Field("cpf.keyword").Query(cpf)))
+                                        , cancellationToken);
+
+            var entities = searchResponse.Documents?.Select(d => DeserializeEntityFromDocument(d))?.ToList();
+
+            return entities != null ? entities : new List<Booking>();
         }
     }
 }

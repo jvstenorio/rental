@@ -7,8 +7,10 @@ using Rental.Domain.Enumerations;
 using Rental.Domain.Models;
 using Rental.Domain.Repositories;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -130,6 +132,13 @@ namespace Rental.Application
 
             doc.Close();
             return ms.ToArray();
+        }
+
+        public async Task<List<BookingDto>> GetBookingsByCpfAsync(string cpf, CancellationToken cancellationToken) 
+        {
+            var bookings = await _bookingsRepository.GetBookingsByCpfAsync(cpf, cancellationToken);
+            var bookingsDto = bookings.Select(b => _mapper.Map<BookingDto>(b)).ToList();
+            return bookingsDto;
         }
         private PdfPTable GetVehicleTable(VehicleDto vehicle) 
         {

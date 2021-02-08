@@ -1,36 +1,31 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<Rental.Web.Models.BookingDto>
+
 @{
+    ViewData["Title"] = "Bookings";
 }
 
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">Reserva</th>
+            <th scope="col">Placa</th>
+            <th scope="col">CPF</th>
+            <th scope="col">Total em Horas</th>
+            <th scope="col">Preço</th>
+            <th scope="col">Data</th>
         </tr>
     </thead>
     <tbody>
+        @foreach (var booking in Model)
+        {
         <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>mdo</td>
+            <th scope="row">@booking.BookingCode</th>
+            <td>@booking.Plate</td>
+            <td>@booking.Cpf</td>
+            <td>@booking.TotalHours</td>
+            <td>R$ @booking.Price</td>
+            <td>@booking.Date</td>
         </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>fat</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>twitter</td>
-        </tr>
+        }
     </tbody>
 </table>

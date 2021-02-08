@@ -34,6 +34,13 @@
             <param name="bookingCode"></param>
             <returns></returns>
         </member>
+        <member name="M:Rental.Api.Controllers.BookingsController.GetBookingByCpfAsync(System.String)">
+            <summary>
+            Get bookings by CPF
+            </summary>
+            <param name="cpf"></param>
+            <returns></returns>
+        </member>
         <member name="M:Rental.Api.Controllers.UsersController.LoginAsync(System.String,System.String)">
             <summary>
             Authenticates an user.

@@ -78,7 +78,7 @@ namespace Rental.Infrastructure.Repositories
             return entities != null ? entities : new List<T>();
         }
 
-        private T DeserializeEntityFromDocument(object document)
+        public T DeserializeEntityFromDocument(object document)
         {
             var serializedResult = JsonConvert.SerializeObject(document);
             return JsonConvert.DeserializeObject<T>(serializedResult);
