@@ -47,6 +47,10 @@ namespace Rental.Application
 
         public async Task<CustomerDto> CreateCustomerAsync(CustomerDto customerDto, CancellationToken cancellationToken)
         {
+            if (await _customersRepository.GetByIdentifierAsync(Customer.GetIdentifier(customerDto.Cpf), cancellationToken) != null) 
+            {
+                throw new ValidationException("Customer already exists");
+            }
             var customer = _mapper.Map<Customer>(customerDto);
             customer.Identifier = Customer.GetIdentifier(customer.Cpf);
             await _customersRepository.AddAsync(customer, cancellationToken);
@@ -55,6 +59,10 @@ namespace Rental.Application
 
         public async Task<EmployeeDto> CreateEmployeeAsync(EmployeeDto employeeDto, CancellationToken cancellationToken)
         {
+            if (await _employeesRepository.GetByIdentifierAsync(Employee.GetIdentifier(employeeDto.RegistrationNumber), cancellationToken) != null)
+            {
+                throw new ValidationException("Employee already exists");
+            }
             var employee = _mapper.Map<Employee>(employeeDto);
             employee.Identifier = Employee.GetIdentifier(employeeDto.RegistrationNumber);
             await _employeesRepository.AddAsync(employee, cancellationToken);
@@ -63,6 +71,10 @@ namespace Rental.Application
 
         public async Task<UserDto> CreateUserAsync(string login, string password, Domain.Enumerations.Profile profile, CancellationToken cancellationToken)
         {
+            if (await _usersRepository.GetByIdentifierAsync(User.GetIdentifier(login), cancellationToken) != null)
+            {
+                throw new ValidationException("User already exists");
+            }
             var user = new User()
             {
                 Login = login,
