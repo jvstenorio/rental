@@ -28,7 +28,8 @@ namespace Rental.Application
             IVehiclesApplication vehiclesApplication,
             IUsersApplication usersApplication,
             IBookingsRepository bookingsRepository,
-            IMapper mapper)
+            IMapper mapper
+            )
         {
             _vehiclesApplication = vehiclesApplication;
             _usersApplication = usersApplication;

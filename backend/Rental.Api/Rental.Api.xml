@@ -51,7 +51,7 @@
         </member>
         <member name="M:Rental.Api.Controllers.UsersController.PostUserAsync(System.String,System.String,Rental.Domain.Enumerations.Profile)">
             <summary>
-            Authenticates an user.
+            Create an user
             </summary>
             <param name="login">CPF or registration number</param>
             <param name="password">User's password</param>

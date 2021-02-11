@@ -17,17 +17,20 @@ namespace Rental.Application
         private readonly IMakesRepository _makesRepository;
         private readonly IModelsRepository _modelsRepository;
         private readonly IMapper _mapper;
+        private readonly IBookingsRepository _bookingsRepository;
 
         public VehiclesApplication(
             IVehiclesRepository vehiclesRepository,
             IMakesRepository makesRepository,
             IModelsRepository modelsRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IBookingsRepository bookingsRepository)
         {
             _vehiclesRepository = vehiclesRepository;
             _makesRepository = makesRepository;
             _modelsRepository = modelsRepository;
             _mapper = mapper;
+            _bookingsRepository = bookingsRepository;
         }
 
         public async Task<MakeDto> CreateMakeAsync(MakeDto makeDto, CancellationToken cancellationToken)
@@ -50,7 +53,7 @@ namespace Rental.Application
 
         public async Task<VehicleDto> CreateVehicleAsync(VehicleDto vehicleDto, CancellationToken cancellationToken)
         {
-            await ValidateVehicleAsync(vehicleDto,cancellationToken);
+            await ValidateVehicleAsync(vehicleDto, cancellationToken);
 
             var vehicle = _mapper.Map<Vehicle>(vehicleDto);
             vehicle.Identifier = Vehicle.GetIdentifier(vehicleDto.Plate);
@@ -63,7 +66,7 @@ namespace Rental.Application
         {
             var identifier = Vehicle.GetIdentifier(plate);
             var vehicle = await _vehiclesRepository.GetByIdentifierAsync(identifier, cancellationToken);
-            if (vehicle == null) 
+            if (vehicle == null)
             {
                 return default;
             }
@@ -73,8 +76,15 @@ namespace Rental.Application
         public async Task<List<VehicleDto>> ListVehiclesAsync(CancellationToken cancellationToken)
         {
             var vehicles = await _vehiclesRepository.ListAllAsync(cancellationToken);
-            var dto = vehicles.Select(v => _mapper.Map<VehicleDto>(v));
-            return dto.ToList();
+            var dto = new List<VehicleDto>();
+            foreach (var vehicle in vehicles) 
+            {
+                if (!await _bookingsRepository.VehicleHasOpenedBookingAsync(vehicle.Plate, cancellationToken)) 
+                {
+                    dto.Add(_mapper.Map<VehicleDto>(vehicle));
+                }
+            }
+            return dto;
         }
 
         private async Task ValidateVehicleAsync(VehicleDto vehicleDto, CancellationToken cancellationToken)
@@ -85,7 +95,7 @@ namespace Rental.Application
             var vehicleTask = _vehiclesRepository.GetByIdentifierAsync(Vehicle.GetIdentifier(vehicleDto.Plate), cancellationToken);
             await Task.WhenAll(makeTask, modelTask, vehicleTask);
 
-            if (makeTask.Result == null) 
+            if (makeTask.Result == null)
             {
                 throw new ValidationException("Invalid make");
             }

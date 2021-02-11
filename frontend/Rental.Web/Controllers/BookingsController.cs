@@ -1,25 +1,27 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Rental.Web.Models;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
+using System.Net.Mime;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Rental.Web.Controllers
 {
+    [Authorize]
     public class BookingsController : Controller
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl;
-        private const string QUOTATIONS_URL = "/Bookings/vehicles/{0}/quotations/{1}/";
-        private const string POST_BOOKING_URL = "/Bookings";
-        private const string GET_BOOKINGS_BY_CPF = "/Bookings/customers/{0}";
+        private const string QUOTATIONS_URL = "/bookings/vehicles/{0}/quotations/{1}/";
+        private const string POST_BOOKING_URL = "/bookings";
+        private const string GET_BOOKINGS_BY_CPF = "/bookings/customers/{0}";
         private const string MOCK_CPF = "13915337390";
 
         public BookingsController(
@@ -29,11 +31,10 @@ namespace Rental.Web.Controllers
             _httpClient = httpClient;
             _apiBaseUrl = configuration.GetSection("API").Value;
         }
-
-        public async Task<ActionResult> Index() 
+        public async Task<ActionResult> IndexAsync() 
         {
   
-            var response = await _httpClient.GetAsync($"{_apiBaseUrl}{string.Format(GET_BOOKINGS_BY_CPF, MOCK_CPF)}");
+            var response = await _httpClient.GetAsync($"{_apiBaseUrl}{string.Format(GET_BOOKINGS_BY_CPF, User.FindFirst(ClaimTypes.UserData).Value)}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -51,7 +52,7 @@ namespace Rental.Web.Controllers
             var booking = new BookingDto()
             {
                 Plate = plate,
-                Cpf = MOCK_CPF
+                Cpf = User.FindFirst(ClaimTypes.UserData).Value
             };
             return View("BookingForm", booking);
         }
@@ -64,32 +65,37 @@ namespace Rental.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(BookingDto booking)
+        public async Task<ActionResult> CreateAsync(BookingDto booking)
         {
             try
             {
                 var jsonContent = JsonConvert.SerializeObject(booking);
-                var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var contentString = new StringContent(jsonContent, Encoding.UTF8, MediaTypeNames.Application.Json);
                 var response = await _httpClient.PostAsync($"{_apiBaseUrl}{POST_BOOKING_URL}", contentString);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index", "Bookings");
+                    var bookingUpdate = JsonConvert.DeserializeObject<BookingDto>(responseContent);
+                    return View("BookingConfirmed", bookingUpdate);
                 }
-                else 
+                else
                 {
-                    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+                    ViewBag.Error = responseContent;
+                    return View("BookingForm", booking);
                 }
                 
             }
             catch
             {
-                return View();
+                ViewBag.Error = "Ocorreu um erro inesperado, por favor tente mais tarde!";
+                return View("BookingForm", booking);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Update(BookingDto booking)
+        public async Task<ActionResult> UpdateAsync(BookingDto booking)
         {
             var response = await _httpClient.GetAsync($"{_apiBaseUrl}{string.Format(QUOTATIONS_URL, booking.Plate, booking.TotalHours)}");
             if (response.IsSuccessStatusCode)
@@ -99,6 +105,11 @@ namespace Rental.Web.Controllers
                 booking.Price = bookingResponse.Price;
             }
             return PartialView("_partialBooking", booking);
+        }
+
+        public ActionResult BookingConfirmed(BookingDto bookingDto) 
+        {
+            return View(bookingDto);
         }
     }
 }

@@ -1,0 +1,12 @@
+﻿@model BookingDto
+@{
+    ViewData["Title"] = "BookingConfirmed";
+}
+
+<center>
+    <h2>@User.Identity.Name, sua reserva foi concluída com sucesso!</h2>
+    <br><br>
+    <h2> Esse é o código da reserva: <b>@Model.BookingCode</b></h2>
+    <br><br>    
+    <a href="~/Vehicles" class="btn btn-princial">Ver outros veículos</a>
+</center>

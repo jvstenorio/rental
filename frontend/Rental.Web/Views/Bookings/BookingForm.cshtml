@@ -15,13 +15,21 @@
         <form asp-action="Create" id="bookingForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div id="partialBooking">
-                <partial name="_partialBooking" model="Model" />
+                <partial name="_PartialBooking" model="Model" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Reservar" class="btn btn-primary" />
             </div>
         </form>
     </div>
+    @if (ViewBag.Error != null)
+    {
+        <script type="text/javascript">
+                    window.onload = function () {
+                        errorNotification({ message: '@ViewBag.Error' });
+                    };
+        </script>
+    }
 </div>
 
 <div>

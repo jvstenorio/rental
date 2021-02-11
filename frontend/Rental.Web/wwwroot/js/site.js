@@ -19,3 +19,45 @@ $(function () {
         });
     });
 });
+
+function successNotification(obj)
+{
+    $.toast({
+        text: obj.message, 
+        icon: 'success', 
+        showHideTransition: 'fade', 
+        allowToastClose: true, 
+        hideAfter: 3000, 
+        stack: 5, 
+        position: 'top-center', 
+        textAlign: 'center',
+        loader: true,  
+        loaderBg: '#9EC600',  
+        beforeShow: function () { }, 
+        afterShown: function () { }, 
+        beforeHide: function () { }, 
+        afterHidden: function () { }  
+    });
+
+}
+
+function errorNotification(obj) {
+
+    $.toast({
+        text: obj.message, 
+
+        icon: 'error', 
+        showHideTransition: 'fade',
+        allowToastClose: true, 
+        hideAfter: 3000, 
+        stack: 5, 
+        position: 'top-center', 
+        textAlign: 'center',  
+        loader: true,  
+        loaderBg: '#9EC600',  
+        beforeShow: function () { }, 
+        afterShown: function () { }, 
+        beforeHide: function () { }, 
+        afterHidden: function () { }
+    });
+}

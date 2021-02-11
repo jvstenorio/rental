@@ -18,7 +18,7 @@ using static iTextSharp.text.TabStop;
 
 namespace Rental.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/bookings")]
     [ApiController]
     public class BookingsController : ControllerBase
     {

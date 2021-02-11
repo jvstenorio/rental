@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Rental.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -52,7 +52,7 @@ namespace Rental.Api.Controllers
         }
 
         /// <summary>
-        /// Authenticates an user.
+        /// Create an user
         /// </summary>
         /// <param name="login">CPF or registration number</param>
         /// <param name="password">User's password</param>

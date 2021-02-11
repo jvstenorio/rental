@@ -52,7 +52,8 @@ namespace Rental.Tests
                 Mocks.GetVehiclesMock(plate, pricePerHour).Object,
                 Mocks.GetCustomersMock(cpf).Object,
                 bookingsRepository.Object,
-                Mocks.GetAutoMapperConfigure());
+                Mocks.GetAutoMapperConfigure()
+                );
 
             var bookingInput = new BookingDto { Cpf = cpf, Plate = plate, TotalHours = totalHours };
             var quotation = await bookingApplication.GetQuotationAsync(plate, totalHours, default);

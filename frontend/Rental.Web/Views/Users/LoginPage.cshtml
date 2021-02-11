@@ -1,0 +1,49 @@
+﻿
+@model UserDto
+
+@{
+    ViewData["Title"] = "LoginPage";
+}
+
+<style>
+    span {
+        color: red;
+        float: left;
+        margin-top: 1%;
+        margin-left: 1%;
+    }
+</style>
+
+<br>
+<center>
+    <h1>Faça login para ter acesso às reservas!</h1>
+    <br>
+    <br>
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+
+        <fieldset style="width: 40%;">
+            <br />
+            <input type="text" class="form-control" name="Login" placeholder="Digite seu login" />
+            @Html.ValidationMessageFor(model => model.Login)
+            <br />
+            <input type="password" class="form-control" name="Password" placeholder="Digite sua senha" />
+            @Html.ValidationMessageFor(model => model.Password)
+            <br />
+            <br />
+            <br />
+            <button type="submit" class="btn btn-primary">Login</button>
+            <br /><br /><br />
+
+            @if (ViewBag.Error != null)
+            {
+                <script type="text/javascript">
+                    window.onload = function () {
+                        errorNotification({ message: '@ViewBag.Error' });
+                    };
+                </script>
+            }
+        </fieldset>
+    }
+</center>
